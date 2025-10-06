@@ -199,7 +199,7 @@ const ItemDetail = () => {
                 </div>
                 
                  <Button 
-                  variant="premium"
+                  variant="default"
                   className="w-full h-12 text-lg mb-4"
                   onClick={() => {
                     if (!user) {

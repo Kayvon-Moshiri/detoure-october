@@ -7,25 +7,50 @@ export default function PremiumHero() {
   const { user, userRole } = useAuth();
 
   return (
-    <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center">
-      <div className="container mx-auto px-4 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-sm text-muted-foreground shadow-lg hover:bg-white/15 hover:border-white/30 transition-all duration-300">
-          <span className="size-2 rounded-full bg-primary/60 animate-pulse" />
-          Member-only auctions
-        </div>
+    <section className="relative min-h-[85vh] flex items-center justify-center">
+      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          {/* Left - Text Content */}
+          <div className="space-y-6 md:space-y-8">
+            <div className="space-y-4">
+              <h1 className="font-light text-5xl md:text-7xl lg:text-8xl tracking-tight leading-[0.95]">
+                DETOURE
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground font-light max-w-md">
+                The clothing app for creators. Sell your style. Shop creator storefronts. Find your perfect brand match.
+              </p>
+            </div>
 
-        <h1 className="mt-6 font-bold tracking-tight text-4xl md:text-6xl lg:text-7xl leading-[1.05]">
-          Exclusive Creator Auctions, Redefined
-        </h1>
-        <p className="mt-4 md:mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-          A quiet place to discover and own what matters. No noise. Just the good stuff.
-        </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                size="lg" 
+                variant="glass" 
+                onClick={() => navigate(user ? "/discover" : "/signup?type=fan")}
+                className="w-full sm:w-auto"
+              >
+                Shop Creators
+              </Button>
+              {(!user || userRole !== 'creator') && (
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  onClick={() => navigate("/signup?type=creator")}
+                  className="w-full sm:w-auto"
+                >
+                  Become a Creator
+                </Button>
+              )}
+            </div>
+          </div>
 
-        <div className="mt-8 flex items-center justify-center gap-3 md:gap-4">
-          <Button size="lg" variant="premium" onClick={() => navigate(user ? "/discover" : "/signup?type=fan")}>Enter</Button>
-          {(!user || userRole !== 'creator') && (
-            <Button size="lg" variant="glass" onClick={() => navigate("/signup?type=creator")}>Become a Creator</Button>
-          )}
+          {/* Right - Hero Image */}
+          <div className="relative aspect-[3/4] md:aspect-[4/5] bg-secondary overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?q=80&w=1000&auto=format&fit=crop" 
+              alt="Fashion Editorial" 
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>

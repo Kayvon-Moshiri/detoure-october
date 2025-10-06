@@ -1,74 +1,71 @@
 import { Header } from "@/components/layout/Header";
 import { MobileNav } from "@/components/layout/MobileNav";
-import { AuctionCard } from "@/components/auctions/AuctionCard";
-import { CreatorCard } from "@/components/creators/CreatorCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 const Discover = () => {
-  // Mock data for auctions
-  const featuredAuctions = [
+  // Mock data - clean product grid
+  const products = [
     {
       id: "1",
-      title: "Vintage Band T-Shirt",
-      currentBid: 45,
-      bidCount: 12,
-      timeRemaining: "2h 15m",
-      imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop",
-      creatorName: "Sarah Smith",
-      creatorAvatar: "https://images.unsplash.com/photo-1494790108755-2616b612e04f?w=150&h=150&fit=crop&crop=face",
-      isLive: true
+      title: "Vintage Denim Jacket",
+      creator: "Sarah Smith",
+      price: 145,
+      imageUrl: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&h=800&fit=crop",
     },
     {
-      id: "2", 
-      title: "Signed Poster",
-      currentBid: 75,
-      bidCount: 8,
-      timeRemaining: "45m",
-      imageUrl: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop",
-      creatorName: "Mark Johnson",
-      creatorAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-      isEndingSoon: true
+      id: "2",
+      title: "Classic White Sneakers",
+      creator: "Mark Johnson",
+      price: 120,
+      imageUrl: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&h=800&fit=crop",
     },
     {
       id: "3",
-      title: "Limited Edition Vinyl",
-      currentBid: 120,
-      bidCount: 25,
-      timeRemaining: "1d 4h",
-      imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
-      creatorName: "Sarah Smith", 
-      creatorAvatar: "https://images.unsplash.com/photo-1494790108755-2616b612e04f?w=150&h=150&fit=crop&crop=face"
-    }
+      title: "Leather Messenger Bag",
+      creator: "Sarah Smith",
+      price: 220,
+      imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&h=800&fit=crop",
+    },
+    {
+      id: "4",
+      title: "Wool Overcoat",
+      creator: "Mark Johnson",
+      price: 340,
+      imageUrl: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600&h=800&fit=crop",
+    },
+    {
+      id: "5",
+      title: "Cotton T-Shirt Set",
+      creator: "Sarah Smith",
+      price: 75,
+      imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop",
+    },
+    {
+      id: "6",
+      title: "Premium Sunglasses",
+      creator: "Mark Johnson",
+      price: 180,
+      imageUrl: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&h=800&fit=crop",
+    },
   ];
 
   const creators = [
     {
       username: "sarahsmith",
       displayName: "Sarah Smith",
-      bio: "Award-winning artist and designer. Creating limited edition collectibles for my amazing fans.",
       avatar: "https://images.unsplash.com/photo-1494790108755-2616b612e04f?w=150&h=150&fit=crop&crop=face",
-      coverImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=200&fit=crop",
-      followerCount: 1243,
-      itemCount: 15,
-      salesCount: 89,
-      isVerified: true
     },
     {
-      username: "markjohnson", 
+      username: "markjohnson",
       displayName: "Mark Johnson",
-      bio: "Music producer and collector. Sharing rare finds and limited editions with my followers.",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-      coverImage: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=200&fit=crop",
-      followerCount: 856,
-      itemCount: 8,
-      salesCount: 45,
-      isVerified: true
-    }
+    },
   ];
 
   const { user } = useAuth();
@@ -88,53 +85,49 @@ const Discover = () => {
             <div className="flex-1 flex flex-col min-w-0">
               <header className="h-16 border-b flex items-center px-4 bg-background sticky top-0 z-10">
                 <div>
-                  <h1 className="text-lg font-semibold">Discover</h1>
+                  <h1 className="text-lg font-light tracking-tight">Shop</h1>
                 </div>
               </header>
               
-              <div className="flex-1 overflow-auto p-4 md:p-6">
-                <div className="w-full max-w-4xl mx-auto space-y-6">
-                  {/* Hero Section */}
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold mb-4">Discover Creators</h2>
-                    <p className="text-muted-foreground mb-6">
-                      Find creators to follow and get notified of their drops
-                    </p>
-                    
-                    {/* Search */}
-                    <div className="relative max-w-md mx-auto">
+              <div className="flex-1 overflow-auto p-4 md:p-8">
+                <div className="w-full max-w-7xl mx-auto">
+                  {/* Filters */}
+                  <div className="mb-8 flex items-center gap-3">
+                    <div className="relative flex-1 max-w-md">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input 
-                        placeholder="Search creators..." 
-                        className="pl-10 h-12 rounded-full"
+                        placeholder="Search items..." 
+                        className="pl-10 h-11"
                       />
                     </div>
+                    <Button variant="outline" size="icon" className="h-11 w-11">
+                      <SlidersHorizontal className="h-4 w-4" />
+                    </Button>
                   </div>
 
-                  {/* Featured Creators */}
-                  <section className="mb-6">
-                    <h3 className="text-xl font-bold mb-4">Featured Creators</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {creators.map((creator) => (
-                        <CreatorCard key={creator.username} {...creator} />
-                      ))}
-                    </div>
-                  </section>
-
-                  {/* Live Auctions */}
-                  <section>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-bold">Live Auctions</h3>
-                      <Button variant="outline" size="sm">
-                        View All
-                      </Button>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {featuredAuctions.map((auction) => (
-                        <AuctionCard key={auction.id} {...auction} />
-                      ))}
-                    </div>
-                  </section>
+                  {/* Product Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    {products.map((product) => (
+                      <Link 
+                        key={product.id} 
+                        to={`/item/${product.id}`}
+                        className="group"
+                      >
+                        <div className="aspect-[3/4] bg-secondary overflow-hidden mb-3">
+                          <img 
+                            src={product.imageUrl} 
+                            alt={product.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs uppercase tracking-wide text-muted-foreground">{product.creator}</p>
+                          <h3 className="text-sm font-light">{product.title}</h3>
+                          <p className="text-sm font-medium">${product.price}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -151,46 +144,74 @@ const Discover = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 pt-6 pb-20 md:pb-6">
+      <main className="pb-20 md:pb-6">
         {/* Hero Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4">Discover Creators</h1>
-          <p className="text-xl text-muted-foreground mb-6">
-            Find creators to follow and get notified of their drops
-          </p>
-          
-          {/* Search */}
-          <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search creators..." 
-              className="pl-10 h-12 rounded-full"
-            />
+        <div className="border-b py-12 md:py-16">
+          <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+            <h1 className="text-4xl md:text-6xl font-light tracking-tight mb-4">Shop Creators</h1>
+            <p className="text-lg text-muted-foreground font-light max-w-2xl">
+              Discover unique pieces from your favorite creators
+            </p>
           </div>
         </div>
 
         {/* Featured Creators */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Featured Creators</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {creators.map((creator) => (
-              <CreatorCard key={creator.username} {...creator} />
-            ))}
+        <section className="py-12 md:py-16 border-b">
+          <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+            <h2 className="text-2xl font-light tracking-tight mb-8">Featured Creators</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {creators.map((creator) => (
+                <Link 
+                  key={creator.username}
+                  to={`/creator/${creator.username}`}
+                  className="group text-center"
+                >
+                  <div className="aspect-square bg-secondary rounded-full overflow-hidden mb-3">
+                    <img 
+                      src={creator.avatar} 
+                      alt={creator.displayName}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <p className="text-sm font-light">{creator.displayName}</p>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* Live Auctions */}
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Live Auctions</h2>
-            <Button variant="outline" size="sm">
-              View All
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredAuctions.map((auction) => (
-              <AuctionCard key={auction.id} {...auction} />
-            ))}
+        {/* All Products */}
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-light tracking-tight">All Items</h2>
+              <Button variant="ghost" size="icon">
+                <SlidersHorizontal className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {products.map((product) => (
+                <Link 
+                  key={product.id} 
+                  to={`/item/${product.id}`}
+                  className="group"
+                >
+                  <div className="aspect-[3/4] bg-secondary overflow-hidden mb-3">
+                    <img 
+                      src={product.imageUrl} 
+                      alt={product.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">{product.creator}</p>
+                    <h3 className="text-sm font-light">{product.title}</h3>
+                    <p className="text-sm font-medium">${product.price}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       </main>

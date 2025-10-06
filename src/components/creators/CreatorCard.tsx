@@ -79,7 +79,7 @@ export function CreatorCard({
           </div>
         </div>
         
-        <Button variant="premium" className={cn("w-full", isMobile ? "text-sm py-2" : "")} size={isMobile ? "sm" : "default"}>
+        <Button variant="default" className={cn("w-full", isMobile ? "text-sm py-2" : "")} size={isMobile ? "sm" : "default"}>
           View Profile
         </Button>
       </CardContent>

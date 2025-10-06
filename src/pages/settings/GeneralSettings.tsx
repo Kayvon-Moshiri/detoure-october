@@ -107,7 +107,7 @@ export default function GeneralSettings() {
             </Card>
 
             <div className="flex justify-end">
-              <Button onClick={handleSave} variant="premium">Save Changes</Button>
+              <Button onClick={handleSave} variant="default">Save Changes</Button>
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function GeneralSettings() {
                 </Card>
 
                 <div className="flex justify-end">
-                  <Button onClick={handleSave} variant="premium">Save Changes</Button>
+                  <Button onClick={handleSave} variant="default">Save Changes</Button>
                 </div>
               </div>
             </div>

@@ -69,7 +69,7 @@ const ApplicationConfirmation = () => {
               <p className="text-sm text-muted-foreground">Connect your Instagram via Facebook</p>
               <Button
                 onClick={handleConnectInstagram}
-                variant="premium"
+                variant="default"
                 size="lg"
                 className="w-full h-12 text-base font-medium"
               >
@@ -85,7 +85,7 @@ const ApplicationConfirmation = () => {
             <div className="grid grid-cols-2 gap-4">
               <Button
                 onClick={handleConnectYoutube}
-                variant="premium"
+                variant="default"
                 size="lg"
                 className="h-12 text-base font-medium"
               >
@@ -94,7 +94,7 @@ const ApplicationConfirmation = () => {
               </Button>
               <Button
                 onClick={handleConnectTikTok}
-                variant="premium"
+                variant="default"
                 size="lg"
                 className="h-12 text-base font-medium"
               >
