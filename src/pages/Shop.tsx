@@ -8,7 +8,7 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 
-const Discover = () => {
+const Shop = () => {
   // Mock data - clean product grid
   const products = [
     {
@@ -134,7 +134,7 @@ const Discover = () => {
           </div>
         </SidebarProvider>
         
-        <MobileNav currentPath="/discover" />
+        <MobileNav currentPath="/shop" />
       </div>
     );
   }
@@ -216,9 +216,9 @@ const Discover = () => {
         </section>
       </main>
 
-      <MobileNav currentPath="/discover" />
+      <MobileNav currentPath="/shop" />
     </div>
   );
 };
 
-export default Discover;
+export default Shop;

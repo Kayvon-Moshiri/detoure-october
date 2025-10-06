@@ -30,10 +30,10 @@ export function MobileNav({ currentPath = "/" }: MobileNavProps) {
               <Home className="h-5 w-5" />
             </Link>
             <Link
-              to="/discover"
+              to="/shop"
               className={cn(
                 "flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 backdrop-blur-sm",
-                actualPath === "/discover" 
+                actualPath === "/shop" 
                   ? "bg-primary/90 text-primary-foreground shadow-lg shadow-primary/40 scale-110" 
                   : "text-foreground/80 hover:text-foreground hover:bg-white/10 hover:scale-105"
               )}
@@ -50,14 +50,14 @@ export function MobileNav({ currentPath = "/" }: MobileNavProps) {
   const navItems = userRole === 'creator' 
     ? [
         { icon: Home, label: "Home", href: "/" },
-        { icon: Search, label: "Discover", href: "/discover" },
+        { icon: Search, label: "Shop", href: "/shop" },
         { icon: Plus, label: "Sell", href: "/list-new-item" },
         { icon: User, label: "Profile", href: `/creator/${profile?.username || ''}` },
         { icon: Settings, label: "Menu", href: "/settings/home" },
       ]
     : [
         { icon: Home, label: "Home", href: "/" },
-        { icon: Search, label: "Discover", href: "/discover" },
+        { icon: Search, label: "Shop", href: "/shop" },
         { icon: Settings, label: "Menu", href: "/settings/home" },
       ];
 

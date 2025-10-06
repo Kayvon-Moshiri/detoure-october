@@ -24,10 +24,10 @@ export function Header() {
 
         {/* Center Navigation - Desktop */}
         <nav className="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2">
-          <Link to="/discover" className="text-sm uppercase tracking-wide hover:opacity-60 transition-opacity">
+          <Link to="/shop" className="text-sm uppercase tracking-wide hover:opacity-60 transition-opacity">
             Shop
           </Link>
-          <Link to="/discover" className="text-sm uppercase tracking-wide hover:opacity-60 transition-opacity">
+          <Link to="/shop" className="text-sm uppercase tracking-wide hover:opacity-60 transition-opacity">
             Creators
           </Link>
           <RoleToggle />
