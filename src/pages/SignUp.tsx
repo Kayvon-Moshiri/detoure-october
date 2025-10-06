@@ -1,0 +1,341 @@
+
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, Eye, EyeOff, User, Star, Check } from "lucide-react";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+
+const SignUp = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isCreator, setIsCreator] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: ""
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Set default account type based on URL parameter
+  useEffect(() => {
+    const accountType = searchParams.get('type');
+    if (accountType === 'creator') {
+      setIsCreator(true);
+    } else if (accountType === 'fan') {
+      setIsCreator(false);
+    }
+  }, [searchParams]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (formData.password.length < 8) {
+      toast({
+        title: "Password too short",
+        description: "Password must be at least 8 characters",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+      
+      if (isCreator) {
+        // For creator accounts, redirect to onboarding instead of creating account
+        // Store the form data temporarily for use in onboarding
+        sessionStorage.setItem('pendingCreatorSignup', JSON.stringify({
+          ...formData,
+          fullName,
+          isCreator: true
+        }));
+        
+        toast({
+          title: "Let's set up your creator profile!",
+          description: "Complete your profile to create your creator account",
+        });
+        
+        navigate("/onboarding/creator/profile");
+      } else {
+        // For fan accounts, create account immediately and log them in
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Create mock user and profile data
+        const mockUser = {
+          id: 'mock-user-id',
+          email: formData.email,
+          user_metadata: {
+            full_name: fullName || 'Demo User'
+          }
+        };
+
+        const mockProfile = {
+          id: 'mock-profile-id',
+          user_id: 'mock-user-id',
+          username: (fullName || 'demo_user').toLowerCase().replace(/\s+/g, '_'),
+          display_name: fullName || 'Demo User',
+          bio: null,
+          avatar_url: null,
+          is_creator: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        // Store in localStorage to persist login
+        localStorage.setItem('fanvault_auth_user', JSON.stringify(mockUser));
+        localStorage.setItem('fanvault_auth_profile', JSON.stringify(mockProfile));
+        
+        toast({
+          title: "Account created successfully!",
+          description: "Welcome to FanVault",
+        });
+        
+        // Refresh the page to update auth state
+        window.location.href = "/";
+      }
+    } catch (error) {
+      toast({
+        title: "Error creating account",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Back Button */}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => navigate("/")}
+          className="mb-6 -ml-2"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <img 
+            src="/lovable-uploads/cedf3fed-66b4-4eeb-b6ed-d39036f2d2d8.png" 
+            alt="FanVault Logo" 
+            className="h-12 mx-auto mb-4"
+          />
+        </div>
+
+        <Card className="border-0 shadow-none">
+          <CardHeader className="text-center pb-6">
+            <h1 className="text-3xl font-bold">Create an Account</h1>
+            <p className="text-muted-foreground text-lg">
+              Unlock a new revenue stream – join FanVault!
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* First Name Field */}
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="text-base font-medium">
+                  First Name *
+                </Label>
+                <Input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  placeholder="Your first name"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  required
+                  className="h-12 text-base"
+                />
+              </div>
+
+              {/* Last Name Field */}
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="text-base font-medium">
+                  Last Name *
+                </Label>
+                <Input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  placeholder="Your last name"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  required
+                  className="h-12 text-base"
+                />
+              </div>
+
+              {/* Email Field */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-base font-medium">
+                  Email *
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="h-12 text-base"
+                />
+              </div>
+
+              {/* Password Field */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-base font-medium">
+                  Password *
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                    className="h-12 text-base pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-12 px-3"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Must be at least 8 characters
+                </p>
+              </div>
+
+              {/* Account Type Selection */}
+              <div className="space-y-4">
+                <Label className="text-base font-medium">I am a:</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Fan Card */}
+                  <button
+                    type="button"
+                    onClick={() => setIsCreator(false)}
+                    className={`relative p-4 rounded-lg border-2 transition-all ${
+                      !isCreator 
+                        ? 'border-fanvault-pink bg-fanvault-pink/10' 
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                    }`}
+                  >
+                    {!isCreator && (
+                      <div className="absolute top-2 right-2">
+                        <div className="w-5 h-5 bg-fanvault-pink rounded-full flex items-center justify-center">
+                          <Check className="w-3 h-3 text-white" />
+                        </div>
+                      </div>
+                    )}
+                    <div className="text-center">
+                      <User className="w-8 h-8 mx-auto mb-2 text-fanvault-pink" />
+                      <h3 className="font-semibold text-base">Fan</h3>
+                      <p className="text-sm text-muted-foreground">
+                        I want to collect items
+                      </p>
+                    </div>
+                  </button>
+
+                  {/* Creator Card */}
+                  <button
+                    type="button"
+                    onClick={() => setIsCreator(true)}
+                    className={`relative p-4 rounded-lg border-2 transition-all ${
+                      isCreator 
+                        ? 'border-fanvault-pink bg-fanvault-pink/10' 
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                    }`}
+                  >
+                    {isCreator && (
+                      <div className="absolute top-2 right-2">
+                        <div className="w-5 h-5 bg-fanvault-pink rounded-full flex items-center justify-center">
+                          <Check className="w-3 h-3 text-white" />
+                        </div>
+                      </div>
+                    )}
+                    <div className="text-center">
+                      <Star className="w-8 h-8 mx-auto mb-2 text-gray-500" />
+                      <h3 className="font-semibold text-base">Creator</h3>
+                      <p className="text-sm text-muted-foreground">
+                        I want to sell items
+                      </p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Terms */}
+              <div className="text-center text-sm text-muted-foreground">
+                By creating an account, you agree to our{" "}
+                <Link to="/legal/terms" className="text-fanvault-pink hover:underline">
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link to="/legal/privacy" className="text-fanvault-pink hover:underline">
+                  Privacy Policy
+                </Link>
+              </div>
+
+              {/* Submit Button */}
+              <Button 
+                type="submit"
+                className="w-full h-12 bg-fanvault-gradient text-lg font-medium"
+                disabled={loading}
+              >
+                {loading ? "Processing..." : 
+                 isCreator ? "Continue to Profile Setup" : "Create Fan Account"}
+              </Button>
+            </form>
+
+            {/* Login Link */}
+            <div className="text-center">
+              <span className="text-muted-foreground">Already have an account? </span>
+              <Link to="/login" className="text-fanvault-pink hover:underline font-medium">
+                Log in
+              </Link>
+            </div>
+
+            {/* Privacy Note */}
+            <p className="text-center text-sm text-muted-foreground">
+              We'll never share your info. Your privacy is our priority.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default SignUp;

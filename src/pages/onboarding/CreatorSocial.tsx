@@ -1,0 +1,279 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { X, Plus, Instagram, Music, Youtube, Link as LinkIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+interface SocialLink {
+  id: string;
+  platform: string;
+  prefix: string;
+  value: string;
+  icon: React.ComponentType<any> | string;
+}
+
+const defaultSocials: Omit<SocialLink, 'id' | 'value'>[] = [
+  { platform: "Instagram", prefix: "instagram.com/", icon: Instagram },
+  { platform: "TikTok", prefix: "tiktok.com/@", icon: Music },
+  { platform: "YouTube", prefix: "youtube.com/@", icon: Youtube },
+  { platform: "Twitch", prefix: "twitch.tv/", icon: Music },
+  { platform: "X", prefix: "x.com/", icon: "/lovable-uploads/ba58c063-365a-44cc-861c-15973a23ce27.png" },
+  { platform: "OnlyFans", prefix: "onlyfans.com/", icon: LinkIcon }
+];
+
+const CreatorSocial = () => {
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>(
+    defaultSocials.map((social, index) => ({
+      ...social,
+      id: index.toString(),
+      value: ""
+    }))
+  );
+  const [customLinks, setCustomLinks] = useState<SocialLink[]>([]);
+  const [isNSFW, setIsNSFW] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const navigate = useNavigate();
+
+  const updateSocialLink = (id: string, value: string, isCustom = false) => {
+    if (isCustom) {
+      setCustomLinks(prev => 
+        prev.map(link => link.id === id ? { ...link, value } : link)
+      );
+    } else {
+      setSocialLinks(prev => 
+        prev.map(link => link.id === id ? { ...link, value } : link)
+      );
+    }
+  };
+
+  const addCustomLink = () => {
+    const newLink: SocialLink = {
+      id: `custom-${Date.now()}`,
+      platform: "Other",
+      prefix: "https://",
+      value: "",
+      icon: LinkIcon
+    };
+    setCustomLinks(prev => [...prev, newLink]);
+  };
+
+  const removeCustomLink = (id: string) => {
+    setCustomLinks(prev => prev.filter(link => link.id !== id));
+  };
+
+  const hasAnyLinks = () => {
+    return [...socialLinks, ...customLinks].some(link => link.value.trim() !== "");
+  };
+
+  const handleNext = () => {
+    navigate("/onboarding/creator/verification");
+  };
+
+  const handleBack = () => {
+    const fromSettings = new URLSearchParams(window.location.search).get('from') === 'settings';
+    navigate(fromSettings ? "/onboarding/creator/profile?from=settings" : "/onboarding/creator/profile");
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <img 
+                src="/lovable-uploads/cedf3fed-66b4-4eeb-b6ed-d39036f2d2d8.png" 
+                alt="FanVault Logo" 
+                className="h-8"
+              />
+            </div>
+            <Button variant="outline">Sign Out</Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto">
+          {/* Progress */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-muted-foreground">Step 2 of 3</span>
+              <span className="text-sm text-muted-foreground">Social Links</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div className="bg-fanvault-gradient h-2 rounded-full w-2/3 transition-all duration-300" />
+            </div>
+          </div>
+
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2">Connect your channels</h1>
+            <p className="text-muted-foreground">
+              Link your social media accounts so fans can find you everywhere (optional)
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            {/* Main Social Platforms */}
+            <div className="grid gap-4">
+              {socialLinks.map((social) => (
+                <div key={social.id} className="space-y-2">
+                  <Label htmlFor={social.id} className="flex items-center space-x-2">
+                    {typeof social.icon === 'string' ? (
+                      <img src={social.icon} alt={social.platform} className="h-5 w-5" />
+                    ) : (
+                      <social.icon className="h-5 w-5" />
+                    )}
+                    <span>{social.platform}</span>
+                  </Label>
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-input bg-muted text-muted-foreground text-sm">
+                      {social.prefix}
+                    </span>
+                    <Input
+                      id={social.id}
+                      placeholder="username"
+                      value={social.value}
+                      onChange={(e) => updateSocialLink(social.id, e.target.value)}
+                      className="h-12 rounded-l-none"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Custom Links */}
+            {customLinks.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="font-medium text-sm text-muted-foreground">Custom Links</h3>
+                {customLinks.map((link) => (
+                  <div key={link.id} className="space-y-2">
+                    <Label htmlFor={link.id} className="flex items-center space-x-2">
+                      {typeof link.icon === 'string' ? (
+                        <img src={link.icon} alt="Custom platform" className="h-5 w-5" />
+                      ) : (
+                        <link.icon className="h-5 w-5" />
+                      )}
+                      <span>Other Platform</span>
+                    </Label>
+                    <div className="flex">
+                      <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-input bg-muted text-muted-foreground text-sm">
+                        {link.prefix}
+                      </span>
+                      <Input
+                        id={link.id}
+                        placeholder="your-profile-url"
+                        value={link.value}
+                        onChange={(e) => updateSocialLink(link.id, e.target.value, true)}
+                        className="h-12 rounded-l-none rounded-r-none border-r-0"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeCustomLink(link.id)}
+                        className="rounded-l-none h-12 px-3"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Add Custom Link Button */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addCustomLink}
+              className="w-full border-dashed"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add another link
+            </Button>
+
+            {/* Info Text */}
+            <div className="text-center text-sm text-muted-foreground bg-muted/50 p-4 rounded-lg">
+              <p>
+                These links will appear on your creator profile. You can always add or update them later.
+              </p>
+            </div>
+
+            {/* NSFW Content Toggle */}
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="space-y-1">
+                <Label htmlFor="nsfw-toggle" className="text-base font-medium">
+                  Do you make NSFW content?
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  This helps us categorize your content appropriately
+                </p>
+              </div>
+              <Switch
+                id="nsfw-toggle"
+                checked={isNSFW}
+                onCheckedChange={setIsNSFW}
+              />
+            </div>
+
+            {/* Terms and Conditions Checkbox */}
+            <div className="flex items-start space-x-3 p-4 border rounded-lg">
+              <Checkbox
+                id="terms-checkbox"
+                checked={agreedToTerms}
+                onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                className="mt-1"
+              />
+              <Label htmlFor="terms-checkbox" className="text-sm leading-relaxed">
+                Check this box to consent to FanVault's{" "}
+                <a 
+                  href="/legal/terms" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-primary hover:underline"
+                >
+                  Terms and Conditions
+                </a>{" "}
+                and{" "}
+                <a 
+                  href="/legal/privacy" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-primary hover:underline"
+                >
+                  Privacy Policy
+                </a>
+                .
+              </Label>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex space-x-4 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="flex-1"
+                onClick={handleBack}
+              >
+                Back
+              </Button>
+              <Button
+                type="button"
+                className="flex-1 bg-fanvault-gradient hover:opacity-90"
+                onClick={handleNext}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default CreatorSocial;
